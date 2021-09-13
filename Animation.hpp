@@ -7,14 +7,14 @@
 
 class Animation
 {
-private:
+protected:
 	sf::Drawable *drawable;
 public:
 	Animation()
 	{
 		this->drawable = new sf::CircleShape(100.f);
 	}
-	void tick(std::vector<sf::Event> events);
-	const sf::Drawable* get_drawable();
+	virtual void tick(std::vector<sf::Event> events);
+	virtual const sf::Drawable* get_drawable();
 };
 #endif

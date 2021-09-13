@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include "Animation.hpp"
+#include "SunAnimation.hpp"
 
 class DoodleJumpApp
 {
@@ -13,7 +14,7 @@ public:
     DoodleJumpApp(sf::RenderWindow *window)
     {
         this->window = window;
-        this->animations.push_back(new Animation);
+        this->animations.push_back(new SunAnimation);
     }
     void draw()
     {
