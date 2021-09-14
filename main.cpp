@@ -40,6 +40,7 @@ public:
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1600, 900), "SFML works!");
+    window.setFramerateLimit(144);
     DoodleJumpApp app(&window);
     // window.setFramerateLimit(60);
     while (window.isOpen())

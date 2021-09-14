@@ -20,8 +20,10 @@ private:
 	double gravitationalAcceleration = 0.001;
 	sf::Clock xClock;
 	sf::Clock yClock;
+	sf::Clock textureSwitchClock;
 	int baseX = 0;
 	int baseY = 0;
+	bool switched = false;
 	void updateSpritePosition();
 public:
 	SunAnimation();

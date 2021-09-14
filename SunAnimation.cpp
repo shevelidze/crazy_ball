@@ -32,10 +32,14 @@ void SunAnimation::updateSpritePosition()
 
 void SunAnimation::tick(std::vector<sf::Event> events, App &app)
 {
-    // this->current_frame ++;
-    // if (this->current_frame >= this->textures.size()) this->current_frame = 0;
-    // sprite.setTexture(*textures[this->current_frame]);
-    std::cout << events.size() << '\n';
+    if (this->textureSwitchClock.getElapsedTime().asMilliseconds() > 70)
+    {
+        this->textureSwitchClock.restart();
+        this->current_frame ++;
+        if (this->current_frame >= this->textures.size()) this->current_frame = 0;
+        sprite.setTexture(*textures[this->current_frame]);
+    }
+    std::cout << this->speed << '\n';
     for (auto event : events)
     {
         if (event.type == sf::Event::KeyPressed)
@@ -58,14 +62,21 @@ void SunAnimation::tick(std::vector<sf::Event> events, App &app)
     double departure = this->sprite.getGlobalBounds().top + this->sprite.getGlobalBounds().height - app.get_window().getSize().y;
     if (departure >= 0)
     {
-        this->baseY = this->sprite.getPosition().y;
-        this->sprite.move(0, -departure);
-        this->speed = (this->speed + this->gravitationalAcceleration * this->yClock.getElapsedTime().asMilliseconds()) * -0.8;
-        if (this->speed > -1)
+        if (!this->switched)
+        {
+            std::cout << "contact\n";
+            this->baseY = this->sprite.getPosition().y;
+            this->sprite.move(0, -departure);
+            // this->speed = (this->speed + this->gravitationalAcceleration * this->yClock.getElapsedTime().asMilliseconds()) * -0.8;
+            // if (this->speed > -1)
             this->speed = -1;
-        this->yClock.restart();
-        updateSpritePosition();
+            this->yClock.restart();
+            this->switched = true;
+        }
+
+        // updateSpritePosition();
     }
+    else this->switched = false;
 }
 
 const sf::Drawable *SunAnimation::get_drawable()
