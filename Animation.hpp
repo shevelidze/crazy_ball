@@ -5,16 +5,15 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
+
+class App;
+
 class Animation
 {
 protected:
 	sf::Drawable *drawable;
 public:
-	Animation()
-	{
-		this->drawable = new sf::CircleShape(100.f);
-	}
-	virtual void tick(std::vector<sf::Event> events);
-	virtual const sf::Drawable* get_drawable();
+	virtual void tick(std::vector<sf::Event> events, App& app) = 0;
+	virtual const sf::Drawable* get_drawable() = 0;
 };
 #endif

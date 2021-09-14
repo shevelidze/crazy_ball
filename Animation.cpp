@@ -3,10 +3,10 @@
 #include <iostream>
 
 
-const sf::Drawable* Animation::get_drawable() {
-    return this->drawable;
-}
+// const sf::Drawable* Animation::get_drawable() {
+//     return this->drawable;
+// }
 
-void Animation::tick(std::vector<sf::Event> events) {
-    std::cout << "tick\n";
-}
+// void Animation::tick(std::vector<sf::Event> events, App& app) {
+//     std::cout << "tick\n";
+// }
