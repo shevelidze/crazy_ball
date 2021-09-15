@@ -10,5 +10,5 @@ FILE(
 
 set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
-add_executable(main main.cpp Animation.hpp Animation.cpp SunAnimation.cpp SunAnimation.hpp App.hpp App.cpp)
+add_executable(main main.cpp Animation.hpp Animation.cpp App.hpp App.cpp Objects.hpp Objects.cpp)
 target_link_libraries(main sfml-graphics)

@@ -1,20 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
-#include "Animation.hpp"
-#include "SunAnimation.hpp"
 #include "App.hpp"
+#include "Objects.hpp"
 
 class DoodleJumpApp : public App
 {
 private:
-    std::vector<Animation *> animations;
+    std::vector<dj::Sprite *> sprites;
 
 public:
     DoodleJumpApp(sf::RenderWindow* window)
     {
         this->window = window;
-        this->animations.push_back(new SunAnimation);
+        this->sprites.push_back(new dj::Sprite);
     }
     const sf::RenderWindow& get_window() {
         return *this->window;
@@ -28,10 +27,10 @@ public:
             eventsVector.push_back(event);
             if (event.type == sf::Event::Closed)
                 this->window->close();
-        for (auto animation_iterator : this->animations)
+        for (auto animation_iterator : this->sprites)
         {
             animation_iterator->tick(eventsVector, *this);
-            this->window->draw(*animation_iterator->get_drawable());
+            this->window->draw(*animation_iterator);
         }
         this->window->display();
     }
@@ -40,7 +39,7 @@ public:
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1600, 900), "SFML works!");
-    window.setFramerateLimit(144);
+    // window.setFramerateLimit(144);
     DoodleJumpApp app(&window);
     // window.setFramerateLimit(60);
     while (window.isOpen())
