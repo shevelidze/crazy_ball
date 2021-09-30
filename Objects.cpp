@@ -31,7 +31,22 @@ void dj::Sprite::checkForMinSpeedY()
 {
 }
 
-void dj::Sprite::tick(std::vector<sf::Event> events, App &app)
+int dj::Sprite::updateBasePosX()
+{
+    if (this->clockX.getElapsedTime().asMilliseconds() < dj::minBaseCoordinatesUpdateInterval)
+        return -1;
+    this->baseX = this->getRealPosX();
+    return this->clockX.restart().asMilliseconds();
+}
+int dj::Sprite::updateBasePosY()
+{
+    if (this->clockY.getElapsedTime().asMilliseconds() < dj::minBaseCoordinatesUpdateInterval)
+        return -1;
+    this->baseY = this->getRealPosY();
+    return this->clockY.restart().asMilliseconds();
+}
+
+void dj::MainBallSprite::tick(std::vector<sf::Event> events, App &app)
 {
     this->setPosition(this->getRealPosX(), this->getRealPosY());
     double departure = this->getRealPosY() + this->getGlobalBounds().height - app.get_window().getSize().y;
@@ -42,7 +57,7 @@ void dj::Sprite::tick(std::vector<sf::Event> events, App &app)
         if (seconds > 0)
         {
             this->speedY = -abs(this->speedY + this->gravityAcceleration * seconds) * 0.8;
-            std::cout << this->speedY + this->gravityAcceleration * this->clockY.getElapsedTime().asMilliseconds() << '\n';
+            // std::cout << this->speedY + this->gravityAcceleration * this->clockY.getElapsedTime().asMilliseconds() << '\n';
             if (abs(this->speedY) < dj::minObjectSpeedY)
             {
                 this->speedY = 0;
@@ -73,19 +88,8 @@ void dj::Sprite::tick(std::vector<sf::Event> events, App &app)
             }
         }
     }
-}
 
-int dj::Sprite::updateBasePosX()
-{
-    if (this->clockX.getElapsedTime().asMilliseconds() < dj::minBaseCoordinatesUpdateInterval)
-        return -1;
-    this->baseX = this->getRealPosX();
-    return this->clockX.restart().asMilliseconds();
-}
-int dj::Sprite::updateBasePosY()
-{
-    if (this->clockY.getElapsedTime().asMilliseconds() < dj::minBaseCoordinatesUpdateInterval)
-        return -1;
-    this->baseY = this->getRealPosY();
-    return this->clockY.restart().asMilliseconds();
+    int textureIndex = int(4 * this->getPosition().x / this->ballCircleLength) % this->textures.size();
+    std::cout << textureIndex << '\n';
+    this->setTexture(*this->textures[textureIndex]);
 }
