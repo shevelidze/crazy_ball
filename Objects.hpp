@@ -8,42 +8,46 @@ class App;
 
 namespace dj
 {
-    const double gravityAcceleration = 0.032 / 5;
+    const double GRAVITY_ACCELERATION = 0.032 / 5;
     const int minBaseCoordinatesUpdateInterval = 100;
-    const double minObjectSpeedY = dj::gravityAcceleration * 50;
+    const double minObjectSpeedY = dj::GRAVITY_ACCELERATION * 50;
 
     class Sprite : public sf::Sprite
     {
-    protected:
-        double gravityAcceleration = dj::gravityAcceleration;
-        double baseX = 0;
-        double baseY = 0;
-        double speedX = 0;
-        double speedY = 0;
-        double resistanceX = 0.001;
+    public:
+        virtual void tick(std::vector<sf::Event> events, App &app);
+        virtual void onIntersect(dj::Sprite *intersectedSprite, const sf::FloatRect &intersection); // calling before tick
+    };
+    class MovebleSprite : public dj::Sprite {
+    private:
+        sf::Vector2f basePos;
+        sf::Vector2f speed;
         sf::Clock clockX;
         sf::Clock clockY;
-        double getRealPosX();
-        double getRealPosY();
+        bool leftBlock = false;
+        bool rightBlock = false;
+        bool topBlock = false;
+        bool bottomBlock = false; 
+        float gravityAcceleration = dj::GRAVITY_ACCELERATION;
         int updateBasePosX();
         int updateBasePosY();
-        void checkForMinSpeedY();
-
+        float getRealPosX();
+        float getRealPosY();
+        float getRealSpeedY();
     public:
-        virtual void tick(std::vector<sf::Event> events, App &app) = 0;
-        bool gravityOperates = false;
-        bool isLeftTransparent = false;
-        bool isRightTransparent = false;
-        bool isTopTransparent = false;
-        bool isBottomTransparent = false;
-        Sprite() {
-            // sf::Texture *texture = new sf::Texture;
-            // texture->loadFromFile("./images/ball/1.png");
-            // this->setTexture(*texture);
+        virtual void onIntersect(dj::Sprite *intersectedSprite, const sf::FloatRect &intersection);
+        void resetBlocks() {
+            this->leftBlock = false;
+            this->rightBlock = false;
+            this->topBlock = false;
+            this->bottomBlock = false;
         }
+        virtual void tick(std::vector<sf::Event> events, App &app);
+        MovebleSprite() : basePos(0, 0), speed(0, 0) {};
     };
 
-    class MainBallSprite : public dj::Sprite {
+
+    class MainBallSprite : public dj::MovebleSprite {
     private:
         double ballCircleLength;
         std::vector<sf::Texture *> textures;

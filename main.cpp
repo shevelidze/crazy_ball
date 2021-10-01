@@ -7,7 +7,8 @@
 class DoodleJumpApp : public App
 {
 private:
-    std::vector<dj::Sprite *> sprites;
+    std::vector<dj::Sprite *> staticSprites;
+    std::vector<dj::MovebleSprite *> movebleSprites;
     sf::Texture background_texture;
     sf::Sprite background_sprite;
 
@@ -15,7 +16,18 @@ public:
     DoodleJumpApp(sf::RenderWindow *window)
     {
         this->window = window;
-        this->sprites.push_back(new dj::MainBallSprite);
+        dj::MainBallSprite ball;
+        std::cout << ball.getGlobalBounds().height << ' ' << ball.getGlobalBounds().width << '\n';
+        dj::Sprite *floor = new dj::Sprite;
+        static sf::Texture texture;
+        texture.loadFromFile("./images/tree.png");
+        floor->setTexture(texture);
+        floor->move(200, 600);
+        std::cout << floor->getGlobalBounds().height << ' ' << floor->getGlobalBounds().width << '\n';
+
+
+        this->movebleSprites.push_back(new dj::MainBallSprite);
+        this->staticSprites.push_back(floor);
         this->background_texture.loadFromFile("./images/background.png");
         this->background_sprite.setTexture(this->background_texture);
     }
@@ -35,10 +47,24 @@ public:
                 this->window->close();
         }
         this->window->draw(this->background_sprite);
-        for (auto animation_iterator : this->sprites)
+        for (auto animationIterator : this->staticSprites)
         {
-            animation_iterator->tick(eventsVector, *this);
-            this->window->draw(*animation_iterator);
+            animationIterator->tick(eventsVector, *this);
+            this->window->draw(*animationIterator);
+        }
+        for (auto animationIterator : this->movebleSprites)
+        {
+            animationIterator->resetBlocks();
+            for (auto checkAnimationIterator : this->staticSprites)
+            {
+                sf::FloatRect intersection;
+                bool intersects = animationIterator->getGlobalBounds().intersects(checkAnimationIterator->getGlobalBounds(), intersection);
+                if (intersects) {
+                    animationIterator->onIntersect(checkAnimationIterator, intersection);
+                }
+            }
+            animationIterator->tick(eventsVector, *this);
+            this->window->draw(*animationIterator);
         }
         this->window->display();
     }
@@ -49,7 +75,6 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1600, 900), "SFML works!");
     // window.setFramerateLimit(144);
     DoodleJumpApp app(&window);
-    // window.setFramerateLimit(60);
     while (window.isOpen())
     {
         app.draw();
