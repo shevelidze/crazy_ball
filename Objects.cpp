@@ -4,108 +4,6 @@
 #include <math.h>
 
 
-
-// void dj::Sprite::checkForMinSpeedY()
-// {
-// }
-
-
-
-// void dj::MainBallSprite::tick(std::vector<sf::Event> events, App &app)
-// {
-//     this->setPosition(this->getRealPosX(), this->getRealPosY());
-//     double departure = this->getRealPosY() + this->getGlobalBounds().height - app.get_window().getSize().y;
-//     if (departure >= 0)
-//     {
-//         int seconds = this->updateBasePosY();
-//         this->setPosition(this->getRealPosX(), app.get_window().getSize().y - this->getGlobalBounds().height);
-//         if (seconds > 0)
-//         {
-//             this->speedY = -abs(this->speedY + this->gravityAcceleration * seconds) * 0.8;
-//             // std::cout << this->speedY + this->gravityAcceleration * this->clockY.getElapsedTime().asMilliseconds() << '\n';
-//             if (abs(this->speedY) < dj::minObjectSpeedY)
-//             {
-//                 this->speedY = 0;
-//                 this->gravityAcceleration = 0;
-//             }
-//         }
-//     }
-//     else this->gravityAcceleration = dj::gravityAcceleration;
-
-//     for (auto event : events)
-//     {
-//         if (event.type == sf::Event::KeyPressed)
-//         {
-//             if (event.key.code == sf::Keyboard::Left)
-//             {
-//                 this->updateBasePosX();
-//                 this->speedX--;
-//             }
-//             else if (event.key.code == sf::Keyboard::Right)
-//             {
-//                 this->updateBasePosX();
-//                 this->speedX++;
-//             }
-//             else if (event.key.code == sf::Keyboard::Space)
-//             {
-//                 this->updateBasePosY();
-//                 this->speedY -= 3;
-//             }
-//         }
-//     }
-
-//     int textureIndex = int(4 * this->getPosition().x / this->ballCircleLength) % this->textures.size();
-//     std::cout << textureIndex << '\n';
-//     this->setTexture(*this->textures[textureIndex]);
-// }
-// void dj::MainBallSprite::tick(std::vector<sf::Event> events, App &app)
-// {
-//     this->setPosition(this->getRealPosX(), this->getRealPosY());
-//     double departure = this->getRealPosY() + this->getGlobalBounds().height - app.get_window().getSize().y;
-//     if (departure >= 0)
-//     {
-//         int seconds = this->updateBasePosY();
-//         this->setPosition(this->getRealPosX(), app.get_window().getSize().y - this->getGlobalBounds().height);
-//         if (seconds > 0)
-//         {
-//             this->speedY = -abs(this->speedY + this->gravityAcceleration * seconds) * 0.8;
-//             // std::cout << this->speedY + this->gravityAcceleration * this->clockY.getElapsedTime().asMilliseconds() << '\n';
-//             if (abs(this->speedY) < dj::minObjectSpeedY)
-//             {
-//                 this->speedY = 0;
-//                 this->gravityAcceleration = 0;
-//             }
-//         }
-//     }
-//     else this->gravityAcceleration = dj::gravityAcceleration;
-
-//     for (auto event : events)
-//     {
-//         if (event.type == sf::Event::KeyPressed)
-//         {
-//             if (event.key.code == sf::Keyboard::Left)
-//             {
-//                 this->updateBasePosX();
-//                 this->speedX--;
-//             }
-//             else if (event.key.code == sf::Keyboard::Right)
-//             {
-//                 this->updateBasePosX();
-//                 this->speedX++;
-//             }
-//             else if (event.key.code == sf::Keyboard::Space)
-//             {
-//                 this->updateBasePosY();
-//                 this->speedY -= 3;
-//             }
-//         }
-//     }
-
-//     int textureIndex = int(4 * this->getPosition().x / this->ballCircleLength) % this->textures.size();
-//     std::cout << textureIndex << '\n';
-//     this->setTexture(*this->textures[textureIndex]);
-// }
-
 void dj::Sprite::onIntersect(dj::Sprite *IntersectedSprite, const sf::FloatRect &intersection) {};
 void dj::Sprite::tick(std::vector<sf::Event> events, App &app) {};
 float dj::MovebleSprite::getRealPosX()
@@ -136,14 +34,14 @@ int dj::MovebleSprite::updateBasePosX()
 {
     // if (this->clockX.getElapsedTime().asMilliseconds() < dj::minBaseCoordinatesUpdateInterval)
     //     return -1;
-    this->basePos.x = this->getRealPosX();
+    this->basePos.x = this->getPosition().x;
     return this->clockX.restart().asMilliseconds();
 }
 int dj::MovebleSprite::updateBasePosY()
 {
     // if (this->clockY.getElapsedTime().asMilliseconds() < dj::minBaseCoordinatesUpdateInterval)
     //     return -1;
-    this->basePos.y = this->getRealPosY();
+    this->basePos.y = this->getPosition().y;
     return this->clockY.restart().asMilliseconds();
 }
 float dj::MovebleSprite::getRealSpeedY()
@@ -151,33 +49,31 @@ float dj::MovebleSprite::getRealSpeedY()
     return this->speed.y + this->gravityAcceleration * clockY.getElapsedTime().asMilliseconds();
 }
 
-void dj::MovebleSprite::onIntersect(dj::Sprite *intersectedSprite, const sf::FloatRect &intersection) 
-{
-    sf::FloatRect globalBoundsRect = this->getGlobalBounds();
-    this->leftBlock = intersection.left == globalBoundsRect.left;
-    this->rightBlock = (intersection.left + intersection.width) == (globalBoundsRect.left + globalBoundsRect.width);
-    this->topBlock = intersection.top == globalBoundsRect.top;
-    this->bottomBlock = intersection.top == intersectedSprite->getGlobalBounds().top;
-    // std::cout << (intersection.top + intersection.height) << ' '  << (globalBoundsRect.top + globalBoundsRect.height) << ' ' <<  bottomBlock << ' ' << "intersection\n";
-}
+// void dj::MovebleSprite::processIntersection(dj::Sprite *intersectedSprite, const sf::FloatRect &intersection) 
+// {
+//     sf::FloatRect globalBoundsRect = this->getGlobalBounds();
+//     this->leftBlock = intersection.left == globalBoundsRect.left;
+//     this->rightBlock = (intersection.left + intersection.width) == (globalBoundsRect.left + globalBoundsRect.width);
+//     this->topBlock = intersection.top == globalBoundsRect.top;
+//     if (intersection.top == intersectedSprite->getGlobalBounds().top) {
+//         std::cout << -intersection.height + std::nextafter(0.f, 1.f) << '\n';
+//         this->move(0, -intersection.height + 1);
+//         if (this->getRealSpeedY() > 0) {
+//             this->updateBasePosY();
+//             this->gravityAcceleration = 0;
+//             this->speed.y = 0;
+//         }
+//     }
+//     else if (this->getRealSpeedY() == 0) {
+//         this->updateBasePosY();
+//         this->gravityAcceleration = dj::GRAVITY_ACCELERATION;
+//     }
+    
+//     // std::cout << (intersection.top + intersection.height) << ' '  << (globalBoundsRect.top + globalBoundsRect.height) << ' ' <<  bottomBlock << ' ' << "intersection\n";
+// }
 
 void dj::MovebleSprite::tick(std::vector<sf::Event> events, App &app)
 {
-    // std::cout << this->clockX.getElapsedTime().asMilliseconds() << '\n';
-    if (this->getRealSpeedY() > 0 && this->bottomBlock) {
-        this->updateBasePosY();
-        this->gravityAcceleration = 0;
-        this->speed.y = 0;
-    }
-    if (this->getRealSpeedY() == 0 && !this->bottomBlock) 
-    {
-        this->updateBasePosY();
-        this->gravityAcceleration = dj::GRAVITY_ACCELERATION;
-    }
-    if (this->getRealSpeedY() < 0 && this->topBlock) {
-        this->updateBasePosY();
-        this->speed.y = 0;
-    }
     for (auto event : events)
     {
         if (event.type == sf::Event::KeyPressed)
@@ -210,6 +106,6 @@ void dj::MovebleSprite::tick(std::vector<sf::Event> events, App &app)
 void dj::MainBallSprite::tick(std::vector<sf::Event> events, App &app)
 {
     this->dj::MovebleSprite::tick(events, app);
-    int textureIndex = int(4 * this->getPosition().x / this->ballCircleLength) % this->textures.size();
+    int textureIndex = int(this->textures.size() * this->getPosition().x / this->ballCircleLength) % this->textures.size();
     this->setTexture(*this->textures[textureIndex]);
 }

@@ -18,42 +18,36 @@ namespace dj
         virtual void tick(std::vector<sf::Event> events, App &app);
         virtual void onIntersect(dj::Sprite *intersectedSprite, const sf::FloatRect &intersection); // calling before tick
     };
-    class MovebleSprite : public dj::Sprite {
+    class MovebleSprite : public dj::Sprite
+    {
     private:
         sf::Vector2f basePos;
-        sf::Vector2f speed;
         sf::Clock clockX;
         sf::Clock clockY;
-        bool leftBlock = false;
-        bool rightBlock = false;
-        bool topBlock = false;
-        bool bottomBlock = false; 
+
+    public:
         float gravityAcceleration = dj::GRAVITY_ACCELERATION;
         int updateBasePosX();
         int updateBasePosY();
         float getRealPosX();
         float getRealPosY();
         float getRealSpeedY();
-    public:
-        virtual void onIntersect(dj::Sprite *intersectedSprite, const sf::FloatRect &intersection);
-        void resetBlocks() {
-            this->leftBlock = false;
-            this->rightBlock = false;
-            this->topBlock = false;
-            this->bottomBlock = false;
-        }
+        sf::Vector2f speed;
         virtual void tick(std::vector<sf::Event> events, App &app);
-        MovebleSprite() : basePos(0, 0), speed(0, 0) {};
+        MovebleSprite() : basePos(0, 0), speed(0, 0){};
     };
 
-
-    class MainBallSprite : public dj::MovebleSprite {
+    class MainBallSprite : public dj::MovebleSprite
+    {
     private:
         double ballCircleLength;
         std::vector<sf::Texture *> textures;
+
     public:
-        MainBallSprite() {
-            for (int i=0; i<4; ++i) {
+        MainBallSprite()
+        {
+            for (int i = 0; i < 8; ++i)
+            {
                 sf::Texture *texture = new sf::Texture;
                 texture->loadFromFile("./images/ball/" + std::to_string(i) + ".png");
                 this->textures.push_back(texture);
