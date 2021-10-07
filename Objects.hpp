@@ -16,7 +16,6 @@ namespace dj
     {
     public:
         virtual void tick(std::vector<sf::Event> events, App &app);
-        virtual void onIntersect(dj::Sprite *intersectedSprite, const sf::FloatRect &intersection); // calling before tick
     };
     class MovebleSprite : public dj::Sprite
     {
@@ -24,13 +23,20 @@ namespace dj
         sf::Vector2f basePos;
         sf::Clock clockX;
         sf::Clock clockY;
+        bool intersectsSprites(const std::vector<dj::Sprite*> &sprites);
+        bool intersectsSprites(const sf::FloatRect &bounds, const std::vector<dj::Sprite *> &sprites);
+        bool topBlock, bottomBlock, leftBlock, rightBlock;
+        bool leftPressed = false, rightPressed = false, spacePressed = false, spacePressedSinceJump = false;
+        bool doubleJumpIsAvailable = true;
 
     public:
         float gravityAcceleration = dj::GRAVITY_ACCELERATION;
         int updateBasePosX();
         int updateBasePosY();
         float getRealPosX();
+        float getRealPosX(int timeMiliseconds);
         float getRealPosY();
+        float getRealPosY(int timeMiliseconds);
         float getRealSpeedY();
         sf::Vector2f speed;
         virtual void tick(std::vector<sf::Event> events, App &app);
