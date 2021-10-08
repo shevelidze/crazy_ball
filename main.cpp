@@ -35,12 +35,22 @@ public:
         {
             dj::Sprite *floor = new dj::Sprite;
             floor->setTexture(texture);
+            floor->move(1200 + i * 80, 200);
+            this->staticSprites.push_back(floor);
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            dj::Sprite *floor = new dj::Sprite;
+            floor->setTexture(texture);
             floor->move(1200 + i * 80, 600);
             this->staticSprites.push_back(floor);
         }
         this->movebleSprites.push_back(new dj::MainBallSprite);
-        // this->background_texture.loadFromFile("./images/background.png");
+        this->background_texture.loadFromFile("./images/background.png");
+        this->background_texture.setRepeated(true);
         this->background_sprite.setTexture(this->background_texture);
+
+        this->background_sprite.setTextureRect(sf::IntRect(0, 0, 10000, 10000));
     }
     const sf::RenderWindow &get_window()
     {

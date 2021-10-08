@@ -1,25 +1,18 @@
 #include "Objects.hpp"
 #include "App.hpp"
 #include <iostream>
+#include <math.h>
 
 void dj::Sprite::tick(std::vector<sf::Event> events, App &app){};
 float dj::MovebleSprite::getRealPosX()
 {
     return this->basePos.x + this->speed.x * clockX.getElapsedTime().asMilliseconds();
 }
-float dj::MovebleSprite::getRealPosX(int timeMiliseconds)
-{
-    return this->basePos.x + this->speed.x * timeMiliseconds;
-}
 
 float dj::MovebleSprite::getRealPosY()
 {
     int clockYElapsedMiliseconds = clockY.getElapsedTime().asMilliseconds();
     return (this->basePos.y + (this->speed.y + this->gravityAcceleration * clockYElapsedMiliseconds / 2) * clockYElapsedMiliseconds);
-}
-float dj::MovebleSprite::getRealPosY(int timeMiliseconds)
-{
-    return (this->basePos.y + (this->speed.y + this->gravityAcceleration * timeMiliseconds / 2) * timeMiliseconds);
 }
 int dj::MovebleSprite::updateBasePosX()
 {
@@ -58,43 +51,31 @@ void dj::MovebleSprite::tick(std::vector<sf::Event> events, App &app)
         this->getRealPosX(),
         this->getRealPosY());
     this->setPosition(newPos);
-    bool intersected = false;
-    int timeX = this->clockX.getElapsedTime().asMilliseconds();
-    int timeY = this->clockY.getElapsedTime().asMilliseconds();
-    float minDistance = 3;
-    while (this->intersectsSprites(app.staticSprites))
-    {
-        intersected = true;
-        --timeX;
-        --timeY;
-        this->setPosition(this->getRealPosX(timeX), this->getRealPosY(timeY));
-    }
+    bool intersected = this->intersectsSprites(app.staticSprites);
+    bool topBlock = false, bottomBlock = false, leftBlock = false, rightBlock = false;
     if (intersected)
     {
-        this->basePos.x += this->getPosition().x - this->getRealPosX();
-        this->basePos.y += this->getPosition().y - this->getRealPosY();
-    }
-    bool topBlock = false, bottomBlock = false, leftBlock = false, rightBlock = false;
-    for (auto spriteIterator : app.staticSprites)
-    {
-        sf::FloatRect bounds = this->getGlobalBounds();
-        // std::cout << bounds.left << ' ';
-        bounds.left += minDistance;
-        // std::cout << bounds.left << '\n';
-        if (this->intersectsSprites(bounds, app.staticSprites) && this->speed.x >= 0)
-            rightBlock = true;
-        bounds.left -= minDistance * 2;
-        if (this->intersectsSprites(bounds, app.staticSprites) && this->speed.x <= 0)
+        sf::Vector2f move = this->getPosition() - this->previousPos;
+        this->setPosition(this->previousPos);
+        move.x = abs(move.x);
+        move.y = abs(move.y);
+        sf::FloatRect checkBounds = this->getGlobalBounds();
+        checkBounds.left -= move.x;
+        if (this->intersectsSprites(checkBounds, app.staticSprites))
             leftBlock = true;
-        bounds.left += minDistance;
-        bounds.top += minDistance;
-        if (this->intersectsSprites(bounds, app.staticSprites) && this->getRealSpeedY() >= 0)
+        checkBounds.left += move.x * 2;
+        if (this->intersectsSprites(checkBounds, app.staticSprites))
+            rightBlock = true;
+        checkBounds.left -= move.x;
+        checkBounds.top += move.y;
+        if (this->intersectsSprites(checkBounds, app.staticSprites))
             bottomBlock = true;
-        bounds.top -= minDistance * 2;
-        if (this->intersectsSprites(bounds, app.staticSprites) && this->getRealSpeedY() <= 0 && !(this->gravityAcceleration > 0 && this->speed.y >= 0))
+        checkBounds.top -= move.y * 2;
+        if (this->intersectsSprites(checkBounds, app.staticSprites))
             topBlock = true;
     }
-    if (bottomBlock)
+
+    if (bottomBlock && !this->bottomBlock)
     {
         this->updateBasePosY();
         this->gravityAcceleration = 0;
@@ -105,17 +86,17 @@ void dj::MovebleSprite::tick(std::vector<sf::Event> events, App &app)
         this->updateBasePosY();
         this->gravityAcceleration = dj::GRAVITY_ACCELERATION;
     }
-    if (topBlock)
+    if (topBlock && !this->topBlock)
     {
         this->updateBasePosY();
         this->speed.y = 0;
     }
-    if (leftBlock)
+    if (leftBlock && !this->leftBlock)
     {
         this->updateBasePosX();
         this->speed.x = 0;
     }
-    if (rightBlock)
+    if (rightBlock && this->rightBlock)
     {
         this->updateBasePosX();
         this->speed.x = 0;
@@ -129,35 +110,11 @@ void dj::MovebleSprite::tick(std::vector<sf::Event> events, App &app)
         this->spacePressed = ((event.key.code == sf::Keyboard::Space && event.type == sf::Event::KeyPressed) || this->spacePressed) &&
                              !(event.key.code == sf::Keyboard::Space && event.type == sf::Event::KeyReleased);
     }
-    if (this->leftPressed && this->speed.x != -1)
-    {
-        this->updateBasePosX();
-        this->speed.x = -1;
-    }
-    if (this->rightPressed && this->speed.x != 1)
-    {
-        this->updateBasePosX();
-        this->speed.x = 1;
-    }
-    if (!this->spacePressed)
-        this->spacePressedSinceJump = false;
-    if (this->spacePressed && this->speed.y != -2)
-    {
-        this->updateBasePosY();
-        this->speed.y = -2;
-        this->gravityAcceleration = dj::GRAVITY_ACCELERATION;
-        this->doubleJumpIsAvailable = true;
-        this->spacePressedSinceJump = true;
-    }
-    else if (this->spacePressed && this->doubleJumpIsAvailable && !this->spacePressedSinceJump)
-    {
-        this->updateBasePosY();
-        this->doubleJumpIsAvailable = false;
-    }
     this->bottomBlock = bottomBlock;
     this->topBlock = topBlock;
     this->leftBlock = leftBlock;
     this->rightBlock = rightBlock;
+    this->previousPos = this->getPosition();
 }
 
 void dj::MainBallSprite::tick(std::vector<sf::Event> events, App &app)
@@ -165,4 +122,26 @@ void dj::MainBallSprite::tick(std::vector<sf::Event> events, App &app)
     this->dj::MovebleSprite::tick(events, app);
     int textureIndex = int(this->textures.size() * this->getPosition().x / this->ballCircleLength) % this->textures.size();
     this->setTexture(*this->textures[textureIndex]);
+    float speedX = 1.5;
+    if (leftPressed && this->speed.x != -speedX && !leftBlock)
+    {
+        this->updateBasePosX();
+        this->speed.x = -speedX;
+    }
+    if (rightPressed && this->speed.x != speedX && !rightBlock)
+    {
+        this->updateBasePosX();
+        this->speed.x = speedX;
+    }
+    if (!(rightPressed || leftPressed) && this->speed.x != 0)
+    {
+        this->updateBasePosX();
+        this->speed.x = 0;
+    }
+    if (this->spacePressed && this->speed.y != -2 && !topBlock && bottomBlock)
+    {
+        this->updateBasePosY();
+        this->speed.y = -1.7f;
+        this->gravityAcceleration = dj::GRAVITY_ACCELERATION;
+    }
 }

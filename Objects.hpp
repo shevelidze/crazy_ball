@@ -9,7 +9,6 @@ class App;
 namespace dj
 {
     const double GRAVITY_ACCELERATION = 0.032 / 5;
-    const int minBaseCoordinatesUpdateInterval = 100;
     const double minObjectSpeedY = dj::GRAVITY_ACCELERATION * 50;
 
     class Sprite : public sf::Sprite
@@ -21,22 +20,22 @@ namespace dj
     {
     private:
         sf::Vector2f basePos;
+        sf::Vector2f previousPos;
         sf::Clock clockX;
         sf::Clock clockY;
-        bool intersectsSprites(const std::vector<dj::Sprite*> &sprites);
+        bool intersectsSprites(const std::vector<dj::Sprite *> &sprites);
         bool intersectsSprites(const sf::FloatRect &bounds, const std::vector<dj::Sprite *> &sprites);
+
+    protected:
         bool topBlock, bottomBlock, leftBlock, rightBlock;
-        bool leftPressed = false, rightPressed = false, spacePressed = false, spacePressedSinceJump = false;
-        bool doubleJumpIsAvailable = true;
+        bool leftPressed = false, rightPressed = false, spacePressed = false;
 
     public:
         float gravityAcceleration = dj::GRAVITY_ACCELERATION;
         int updateBasePosX();
         int updateBasePosY();
         float getRealPosX();
-        float getRealPosX(int timeMiliseconds);
         float getRealPosY();
-        float getRealPosY(int timeMiliseconds);
         float getRealSpeedY();
         sf::Vector2f speed;
         virtual void tick(std::vector<sf::Event> events, App &app);
