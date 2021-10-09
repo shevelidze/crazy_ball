@@ -3,7 +3,9 @@
 #include <iostream>
 #include <math.h>
 
+
 void dj::Sprite::tick(std::vector<sf::Event> events, App &app){};
+void dj::Sprite::onIntersect(dj::MovebleSprite *movebleSprite, const dj::Side &side){};
 float dj::MovebleSprite::getRealPosX()
 {
     return this->basePos.x + this->speed.x * clockX.getElapsedTime().asMilliseconds();
@@ -37,11 +39,17 @@ bool dj::MovebleSprite::intersectsSprites(const std::vector<dj::Sprite *> &sprit
     return intersects;
 }
 
-bool dj::MovebleSprite::intersectsSprites(const sf::FloatRect &bounds, const std::vector<dj::Sprite *> &sprites)
+bool dj::MovebleSprite::intersectsSprites(const sf::FloatRect &bounds, const std::vector<dj::Sprite *> &sprites, const dj::Side &side)
 {
     bool intersects = false;
     for (auto spriteIterator : sprites)
-        intersects = intersects || bounds.intersects(spriteIterator->getGlobalBounds());
+    {
+        if (bounds.intersects(spriteIterator->getGlobalBounds()))
+        {
+            intersects = true;
+            spriteIterator->onIntersect(this, side.getInverted());
+        }
+    }
     return intersects;
 }
 
@@ -61,17 +69,17 @@ void dj::MovebleSprite::tick(std::vector<sf::Event> events, App &app)
         move.y = abs(move.y);
         sf::FloatRect checkBounds = this->getGlobalBounds();
         checkBounds.left -= move.x;
-        if (this->intersectsSprites(checkBounds, app.staticSprites))
+        if (this->intersectsSprites(checkBounds, app.staticSprites, dj::Sides::LEFT))
             leftBlock = true;
         checkBounds.left += move.x * 2;
-        if (this->intersectsSprites(checkBounds, app.staticSprites))
+        if (this->intersectsSprites(checkBounds, app.staticSprites, dj::Sides::RIGHT))
             rightBlock = true;
         checkBounds.left -= move.x;
         checkBounds.top += move.y;
-        if (this->intersectsSprites(checkBounds, app.staticSprites))
+        if (this->intersectsSprites(checkBounds, app.staticSprites, dj::Sides::BOTTOM))
             bottomBlock = true;
         checkBounds.top -= move.y * 2;
-        if (this->intersectsSprites(checkBounds, app.staticSprites))
+        if (this->intersectsSprites(checkBounds, app.staticSprites, dj::Sides::TOP))
             topBlock = true;
     }
 

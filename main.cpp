@@ -21,29 +21,25 @@ public:
         texture.loadFromFile("./images/floor_block.png");
         for (int i = 0; i < 10; i++)
         {
-            dj::Sprite *floor = new dj::Sprite;
-            floor->setTexture(texture);
+            dj::Sprite *floor = new dj::floorBlockSprite;
             floor->move(i * 80, 600);
             this->staticSprites.push_back(floor);
         }
         for (int i = 0; i < 10; i++)
         {
-            dj::Sprite *floor = new dj::Sprite;
-            floor->setTexture(texture);
+            dj::Sprite *floor = new dj::floorBlockSprite;
             floor->move(i * 80, 200);
             this->staticSprites.push_back(floor);
         }
         for (int i = 0; i < 10; i++)
         {
-            dj::Sprite *floor = new dj::Sprite;
-            floor->setTexture(texture);
+            dj::Sprite *floor = new dj::floorBlockSprite;
             floor->move(1200 + i * 80, 200);
             this->staticSprites.push_back(floor);
         }
         for (int i = 0; i < 10; i++)
         {
-            dj::Sprite *floor = new dj::Sprite;
-            floor->setTexture(texture);
+            dj::Sprite *floor = new dj::floorBlockSprite;
             floor->move(1200 + i * 80, 600);
             this->staticSprites.push_back(floor);
         }

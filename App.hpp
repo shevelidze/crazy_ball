@@ -4,7 +4,11 @@
 
 #include <vector>
 #include <SFML/Graphics.hpp>
-#include "Objects.hpp"
+
+namespace dj {
+	class Sprite;
+	class MovebleSprite;
+}
 
 class App
 {
