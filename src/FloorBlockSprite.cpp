@@ -13,16 +13,11 @@ namespace cbg
         if (this->topIntersection)
         {
             this->setColor(sf::Color::Red);
-            noTopIntersectionsTimesInRow = 0;
+            lastIntersectionClock.restart();
         }
-        else if (noTopIntersectionsTimesInRow >= 1000)
+        else if (lastIntersectionClock.getElapsedTime().asMilliseconds() >= 100)
         {
             this->setColor(sf::Color::White);
-            noTopIntersectionsTimesInRow = 1001;
-        }
-        else
-        {
-            noTopIntersectionsTimesInRow++;
         }
         this->topIntersection = false;
     }

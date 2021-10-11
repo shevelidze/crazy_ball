@@ -7,13 +7,12 @@
 #include "Side.hpp"
 #include "MovebleSprite.hpp"
 
-
 namespace cbg
 {
 	class FloorBlockSprite : public Sprite
 	{
 	private:
-		int noTopIntersectionsTimesInRow = 0;
+		sf::Clock lastIntersectionClock;
 		int topIntersection = false;
 
 	public:
