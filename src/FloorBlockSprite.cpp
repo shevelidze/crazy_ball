@@ -1,4 +1,5 @@
 #include "FloorBlockSprite.hpp"
+#include <iostream>
 
 namespace cbg
 {
@@ -10,15 +11,36 @@ namespace cbg
     }
     void FloorBlockSprite::tick(std::vector<sf::Event> events, CrazyBallGame &app)
     {
-        if (this->topIntersection)
+        sf::Color newColor = this->getColor();
+        if (topIntersection)
         {
-            this->setColor(sf::Color::Red);
-            lastIntersectionClock.restart();
+            newColor = sf::Color::Red;
+            this->lastIntersectionClock.restart();
+            this->isFaded = false;
+            this->isFading = false;
         }
-        else if (lastIntersectionClock.getElapsedTime().asMilliseconds() >= 100)
+        else if (this->lastIntersectionClock.getElapsedTime().asMilliseconds() > this->fadingDelayMiliseconds && !this->isFading && !this->isFaded)
         {
-            this->setColor(sf::Color::White);
+            this->isFading = true;
+            this->fadingClock.restart();
         }
+
+        if (this->isFading)
+        {
+            int chanelsValue = (double(this->fadingClock.getElapsedTime().asMilliseconds()) / this->fadingDurationMiliseconds) * 255;
+            std::cout << chanelsValue << '\n';
+            if (chanelsValue >= 255) {
+                newColor = sf::Color::White;
+                this->isFading = false;
+                this->isFaded = true;
+            }
+            else {
+                newColor.g = newColor.b = chanelsValue;
+            }
+        }
+
+        this->setColor(newColor);
+
         this->topIntersection = false;
     }
     void FloorBlockSprite::onIntersect(MovebleSprite *movebleSprite, const Side &side)

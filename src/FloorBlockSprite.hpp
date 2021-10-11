@@ -14,6 +14,11 @@ namespace cbg
 	private:
 		sf::Clock lastIntersectionClock;
 		int topIntersection = false;
+		int fadingDurationMiliseconds = 500;
+		int fadingDelayMiliseconds = 100;
+		bool isFading = false;
+		bool isFaded = true;
+		sf::Clock fadingClock;
 
 	public:
 		FloorBlockSprite();

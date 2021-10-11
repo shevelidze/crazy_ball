@@ -38,7 +38,7 @@ namespace cbg
         if (this->spacePressed && this->speed.y != -2 && !topBlock && bottomBlock)
         {
             this->updateBasePosY();
-            this->speed.y = -1.7f;
+            this->speed.y = -2.5f;
             this->gravityAcceleration = GRAVITY_ACCELERATION;
         }
     }
