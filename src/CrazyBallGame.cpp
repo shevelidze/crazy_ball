@@ -1,49 +1,39 @@
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <iostream>
-#include "App.hpp"
-#include "Objects.hpp"
+#include "CrazyBallGame.hpp"
 
-class CrazyBallApp : public App
+
+namespace cbg
 {
-private:
-    sf::Texture background_texture;
-    sf::Sprite background_sprite;
-    dj::MovebleSprite *focusSprite;
-    sf::FloatRect viewRect = sf::FloatRect(0, 0, 1600, 1200);
-
-public:
-    CrazyBallApp(sf::RenderWindow *window)
+    CrazyBallGame::CrazyBallGame(sf::RenderWindow *window)
     {
         this->window = window;
-        dj::MainBallSprite ball;
+        MainBallSprite ball;
         static sf::Texture texture;
         texture.loadFromFile("./images/floor_block.png");
         for (int i = 0; i < 10; i++)
         {
-            dj::Sprite *floor = new dj::floorBlockSprite;
+            cbg::Sprite *floor = new cbg::FloorBlockSprite;
             floor->move(i * 80, 600);
             this->staticSprites.push_back(floor);
         }
         for (int i = 0; i < 10; i++)
         {
-            dj::Sprite *floor = new dj::floorBlockSprite;
+            cbg::Sprite *floor = new cbg::FloorBlockSprite;
             floor->move(i * 80, 200);
             this->staticSprites.push_back(floor);
         }
         for (int i = 0; i < 10; i++)
         {
-            dj::Sprite *floor = new dj::floorBlockSprite;
+            cbg::Sprite *floor = new cbg::FloorBlockSprite;
             floor->move(1200 + i * 80, 200);
             this->staticSprites.push_back(floor);
         }
         for (int i = 0; i < 10; i++)
         {
-            dj::Sprite *floor = new dj::floorBlockSprite;
+            cbg::Sprite *floor = new cbg::FloorBlockSprite;
             floor->move(1200 + i * 80, 600);
             this->staticSprites.push_back(floor);
         }
-        this->focusSprite = new dj::MainBallSprite;
+        this->focusSprite = new cbg::MainBallSprite;
         this->movebleSprites.push_back(focusSprite);
         this->background_texture.loadFromFile("./images/background.png");
         this->background_texture.setRepeated(true);
@@ -51,11 +41,11 @@ public:
         this->background_sprite.setTextureRect(sf::IntRect(0, 0, 100000, 100000));
         this->background_sprite.move(-this->background_sprite.getGlobalBounds().width / 2, -this->background_sprite.getGlobalBounds().height / 2);
     }
-    const sf::RenderWindow &get_window()
+    const sf::RenderWindow &CrazyBallGame::get_window()
     {
         return *this->window;
     }
-    void draw()
+    void CrazyBallGame::draw()
     {
         this->window->clear();
         sf::Event event;
@@ -94,15 +84,4 @@ public:
         this->window->setView(newView);
         this->window->display();
     }
-};
-
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
-    CrazyBallApp app(&window);
-    while (window.isOpen())
-    {
-        app.draw();
-    }
-    return 0;
 }
