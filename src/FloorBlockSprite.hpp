@@ -13,7 +13,7 @@ namespace cbg
 	{
 	private:
 		sf::Clock lastIntersectionClock;
-		int topIntersection = false;
+		int intersection = false;
 		int fadingDurationMiliseconds = 500;
 		int fadingDelayMiliseconds = 100;
 		bool isFading = false;

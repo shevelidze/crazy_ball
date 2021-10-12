@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-
 project("SFMLTest")
-
-
-set(SFML_STATIC_LIBRARIES TRUE)
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 add_executable(main src/main.cpp src/CrazyBallGame.cpp src/Sprite.cpp src/MovebleSprite.cpp src/MainBallSprite.cpp src/FloorBlockSprite.cpp src/Side.cpp)
-target_link_libraries(main sfml-graphics)
+target_link_libraries(main PUBLIC sfml-graphics)

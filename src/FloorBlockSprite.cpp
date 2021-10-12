@@ -12,7 +12,7 @@ namespace cbg
     void FloorBlockSprite::tick(std::vector<sf::Event> events, CrazyBallGame &app)
     {
         sf::Color newColor = this->getColor();
-        if (topIntersection)
+        if (this->intersection)
         {
             newColor = sf::Color::Red;
             this->lastIntersectionClock.restart();
@@ -41,13 +41,10 @@ namespace cbg
 
         this->setColor(newColor);
 
-        this->topIntersection = false;
+        this->intersection = false;
     }
     void FloorBlockSprite::onIntersect(MovebleSprite *movebleSprite, const Side &side)
     {
-        if (side == Sides::TOP || side == Sides::BOTTOM)
-        {
-            this->topIntersection = true;
-        }
+        this->intersection = true;
     }
 }

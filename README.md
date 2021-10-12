@@ -12,8 +12,6 @@ cmake --build .
 ./main
 ```
 
-**Note:** For a **not windows os**, maybe it's nessesary to set `SFML_STATIC_LIBRARIES` to `FALSE` in the **CMakeLists.txt**.
-
 ### Controls
 
 `←` - **move to the left**
